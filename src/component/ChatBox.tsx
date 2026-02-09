@@ -118,7 +118,7 @@ const ChatBox = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      text: "Hello! I'm your AI assistant. How can I help you today?",
+      text: "Hi! 👋 I'm your AI News RAG Assistant. Upload your JSON news file and ask anything related to it.",
       sender: "ai",
     },
   ]);
@@ -153,13 +153,22 @@ const ChatBox = () => {
       sender: "ai",
     };
     setMessages((prev) => [...prev, aiMessage]);
+    const sessionId = localStorage.getItem("sessionId") || crypto.randomUUID();
+
+    localStorage.setItem("sessionId", sessionId);
 
     try {
       const res = await axiosClient.post("/chat", {
         userQuery: inputText,
+        sessionId: sessionId,
       });
 
       const data = res.data;
+      console.log(data, "yyyyyyyyyyyyyyyyyyyyyyyyy");
+      if (Object.keys(data).length === 0) {
+        data.response =
+          "Apologies! We are currently experiencing some technical issues. Please try again later.";
+      }
 
       setMessages((prev) =>
         prev.map((msg) =>
@@ -176,7 +185,7 @@ const ChatBox = () => {
           msg.id === aiMessageId
             ? {
                 ...msg,
-                text: "Sorry, I encountered an error. Please try again.",
+                text: "Oops! Something went wrong while fetching the answer. Please try again.",
               }
             : msg,
         ),
@@ -203,11 +212,13 @@ const ChatBox = () => {
       <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white shadow-lg">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-            <span className="text-teal-600 font-bold text-sm">AI</span>
+            <span className="bg-gradient-to-r from-teal-600 via-teal-400 to-teal-200 font-bold text-sm">AI</span>
           </div>
           <div>
-            <h1 className="text-lg font-semibold">AI Assistant</h1>
-            <p className="text-sm text-teal-100">Always here to help</p>
+            <h1 className="text-lg font-semibold">AI News RAG Assistant</h1>
+            <p className="text-sm text-teal-100">
+              Ask questions directly from your uploaded JSON news data
+            </p>
           </div>
         </div>
 
@@ -224,7 +235,7 @@ const ChatBox = () => {
              cursor-pointer"
             onClick={handleNewsIngestion}
           >
-            Ingest News
+            Upload News JSON
           </button>
         </div>
       </div>
@@ -238,11 +249,12 @@ const ChatBox = () => {
                 <span className="text-white font-bold text-xl">AI</span>
               </div>
               <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                How can I help you today?
+                What would you like to know from your news file?
               </h2>
               <p className="text-gray-500 text-center max-w-md">
-                I'm here to answer questions, help with tasks, and provide code
-                examples when needed.
+                Upload your JSON news dataset using the button above, then ask
+                questions like: "Summarize the latest update", "What is
+                trending?", or "Tell me details about a specific topic."
               </p>
             </div>
           )}
@@ -306,10 +318,10 @@ const ChatBox = () => {
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder="Ask me anything..."
+              placeholder="Ask something from your uploaded news..."
               disabled={isLoading}
               rows={1}
-              className="w-full resize-none rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 pr-12 text-slate-900 placeholder-slate-500 focus:border-teal-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-20 disabled:opacity-50 max-h-32"
+              className="w-full resize-none rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 pr-12 text-slate-900 placeholder-slate-500 focus:border-teal-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-20 disabled:opacity-50 max-h-10"
               style={{
                 minHeight: "48px",
                 height: "auto",
@@ -341,7 +353,8 @@ const ChatBox = () => {
             </button>
           </div>
           <div className="mt-2 text-xs text-slate-500 text-center">
-            AI can make mistakes. Consider checking important information.
+            Responses are generated from your uploaded news JSON. Please verify
+            critical information when needed.
           </div>
         </div>
       </div>

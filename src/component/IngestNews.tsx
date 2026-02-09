@@ -40,7 +40,7 @@ export const NewsIngestionPopup = ({
       <div className="w-full max-w-lg rounded-2xl bg-white shadow-2xl border border-gray-200 overflow-hidden">
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-purple-600 to-pink-500">
+        <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600">
           <h2 className="text-lg font-semibold text-white">
             📰 News Ingestion
           </h2>
@@ -87,7 +87,7 @@ export const NewsIngestionPopup = ({
                 </p>
 
                 <p className="text-xs text-gray-400">
-                  Supported: PDF, DOCX, TXT
+                  Supported: Only JSON File
                 </p>
 
                 {file && (
@@ -113,7 +113,7 @@ export const NewsIngestionPopup = ({
             {/* Ingest */}
             <button
               onClick={handleIngest}
-              className="px-5 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-500 text-white font-semibold hover:opacity-90 transition shadow-md"
+              className="px-5 py-2 rounded-lg bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 text-white font-semibold hover:opacity-90 transition shadow-md"
             >
                Ingest News
             </button>
